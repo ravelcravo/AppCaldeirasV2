@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -166,7 +167,7 @@ namespace AppCaldeirasV2
 
             return listDados;
         }
-        public void ExportarParaExcel()
+        public void ExportarParaExcel(string NomeCaldeira)
         {
             Banco_Model banco_Model = new Banco_Model();
             // Conectar ao banco de dados do MongoDB
@@ -175,7 +176,7 @@ namespace AppCaldeirasV2
             var colecao = database.GetCollection<BsonDocument>(collectionName);
 
             // Obter os últimos 100 registros com o filtro
-            var filtro = Builders<BsonDocument>.Filter.Eq("NomeCaldeira", "caldeira01");
+            var filtro = Builders<BsonDocument>.Filter.Eq("NomeCaldeira", NomeCaldeira);
             var opcoes = new FindOptions<BsonDocument>
             {
                 Sort = Builders<BsonDocument>.Sort.Descending("Data"),
@@ -205,25 +206,46 @@ namespace AppCaldeirasV2
             int linha = 2;
             foreach (var item in dados)
             {
-                planilha.Cells[linha, 1].Value = item[1];
-                planilha.Cells[linha, 2].Value = item[0];
-                planilha.Cells[linha, 3].Value = item[3];
-                planilha.Cells[linha, 4].Value = item[6];
-                planilha.Cells[linha, 5].Value = item[4];
-                planilha.Cells[linha, 6].Value = item[5];
-                planilha.Cells[linha, 7].Value = item[6];
-                planilha.Cells[linha, 8].Value = item[7];
+                planilha.Cells[linha, 1].Value = item[1].ToString();
+                planilha.Cells[linha, 2].Value = item[0].ToString();
+                planilha.Cells[linha, 3].Value = item[3].ToString();
+                planilha.Cells[linha, 4].Value = item[6].ToString();
+                planilha.Cells[linha, 5].Value = item[4].ToString();
+                planilha.Cells[linha, 6].Value = item[5].ToString();
+                planilha.Cells[linha, 7].Value = item[2].ToString();
+                planilha.Cells[linha, 8].Value = item[7].ToString();
                 // ...
                 linha++;
             }
 
             // Salvar o arquivo Excel
-            var nomeArquivo = "exportacao.xls";
-            var caminhoArquivo = Path.Combine(Environment.CurrentDirectory, nomeArquivo);
+            string MeusDocumentos = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string Data = DataSql(DateTime.Now.ToString());
+            var nomeArquivo =  $"Exportacao_{Data}_{NomeCaldeira}.xls";
+            var caminhoArquivo = Path.Combine(MeusDocumentos, nomeArquivo);
             FileInfo arquivoExcel = new FileInfo(caminhoArquivo);
             pacoteExcel.SaveAs(arquivoExcel);
 
-            Console.WriteLine("Exportação concluída.");
+            MessageBox.Show("Relatório da caldeira gerado com sucesso e enviado para a pasta 'Meus Documentos'.");
+
+            //Process.Start(arquivoExcel.ToString());
+        }
+        private string  DataSql(string Texto)
+        {
+            Texto = Texto.Substring(0, 10);
+            string dia = Texto.Split('/')[0];
+            string mes = Texto.Split('/')[1];
+            string anos = Texto.Split('/')[2];
+
+            Texto = anos + "-" + mes + "-" + dia;
+            return Texto;
+        }
+
+        public string InverterString(string input)
+        {
+            char[] caracteres = input.ToCharArray();
+            Array.Reverse(caracteres);
+            return new string(caracteres);
         }
     }
 }

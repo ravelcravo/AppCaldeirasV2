@@ -69,7 +69,7 @@ namespace AppCaldeirasV2.Views
         private void button1_Click(object sender, EventArgs e)
         {
             Banco banco = new Banco();
-            banco.ExportarParaExcel();
+            banco.ExportarParaExcel(NomCaldeira);
         }
     }
 }
