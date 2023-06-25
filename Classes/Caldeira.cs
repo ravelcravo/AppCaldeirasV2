@@ -41,7 +41,7 @@ namespace AppCaldeirasV2
             chart.Series.Add("Valores Mínimos");
             chart.Series["Valores Mínimos"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
             chart.Series["Valores Mínimos"].Points.AddXY("Pressão", NiveisIndicadores.NivelMinimoPressao);
-            chart.Series["Valores Mínimos"].Points.AddXY("Temperatura", NiveisIndicadores.NivelMinimoPressao);
+            chart.Series["Valores Mínimos"].Points.AddXY("Temperatura", NiveisIndicadores.NivelMinimoTemperatura);
             chart.Series["Valores Mínimos"].Points.AddXY("Nível da Água", NiveisIndicadores.NivelMinimoAgua);
             chart.Series["Valores Mínimos"].Points.AddXY("Nivel do Combustível", NiveisIndicadores.NivelMinimoCombustivel);
 
@@ -100,7 +100,7 @@ namespace AppCaldeirasV2
             //chart.Series["Valores Máximos"].MarkerColor = Color.White;
             chart.ChartAreas[0].RecalculateAxesScale();
 
-           // VerificarNiveis(Caldeira, pressao, nivelAgua, NivelCombustivel, temperatura);
+           VerificarNiveis(Caldeira, pressao, nivelAgua, NivelCombustivel, temperatura);
 
         }
         public static void GerarMediaIndicadores(Chart chart, string Caldeira, int NumCaldeira)
